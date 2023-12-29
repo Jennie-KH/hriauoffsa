@@ -3,7 +3,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h5 class="m-0"><a class="btn btn-dark btn-sm" href="/users">Back</a></h5>
+            <h5 class="m-0"><a class="btn btn-dark btn-sm" href="/users">ថយក្រោយ</a></h5>
 
         </div>
         <div class="card-body">
@@ -129,11 +129,11 @@
                             <select name="gender" class="form-control" id="exampleFormControlInput1"
                                 value="{{ old('gender') }}" disabled>
                                 @if ($user->gender == 'f')
-                                    <option value="f" selected>Female</option>
+                                    <option value="f" selected>ស្រី</option>
                                 @elseif ($user->gender == 'm')
-                                    <option value="m" selected>Male</option>
+                                    <option value="m" selected>ប្រុស</option>
                                 @else
-                                    <option value="o" selected>Other</option>
+                                    <option value="o" selected>ផ្សេងៗ</option>
                                 @endif
                             </select>
                             @error('gender')
@@ -223,7 +223,7 @@
                 </div>
 
                 <br>
-                <input type="submit" class="btn btn-danger btn-sm" value="Delete">
+                <input type="submit" class="btn btn-danger btn-sm" value="លុប">
             </form>
         </div>
     </div>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\Active;
 use App\Models\Role;
 use App\Models\User;
 use App\Enum\RoleUnit;
@@ -13,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\File;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -40,7 +39,7 @@ class UserController extends Controller
                 'firstNameKh' => ['bail', 'required', 'max:100'],
                 'lastNameKh' => ['bail', 'required', 'max:100'],
                 'email' => ['bail', 'required', 'email', Rule::unique('users', 'email')],
-                'password' => ['bail', 'required',],
+                'password' => ['bail', 'required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
                 'phoneNumber' => ['bail', 'required', Rule::unique('users', 'phoneNumber')],
                 'idCard' => ['bail', 'required', Rule::unique('users', 'idCard')],
                 'dateOfBirth' => ['bail', 'required', 'date', 'before:' . now()->subYears(18)->addDays(1)->format('Y-m-d')],
@@ -79,8 +78,6 @@ class UserController extends Controller
             $extenstion = $file->getClientOriginalExtension();
             $filename = Str::random(30) . '.' . strval($extenstion);
             $file->move('images/', $filename);
-        } else {
-            $filename = '';
         }
 
         $user = new User();
@@ -107,7 +104,7 @@ class UserController extends Controller
         $user->lastNameKh = $request->input('lastNameKh');
         $user->gender = $request->input('gender');
         $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
+        $user->password = Hash::make($request->input('password'), ['rounds' => 12]);
         $user->phoneNumber = $request->input('phoneNumber');
         $user->idCard = $request->input('idCard');
         $user->dateOfBirth = $request->input('dateOfBirth');
@@ -148,12 +145,14 @@ class UserController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $user = User::findOrFail($id);
+
         $request->validate(
             [
                 'firstNameKh' => ['bail', 'required', 'max:100'],
                 'lastNameKh' => ['bail', 'required', 'max:100'],
                 'email' => ['bail', 'required', 'email', Rule::unique('users', 'email')->whereNot('id', $id)],
-                'password' => ['bail', 'required', Password::min(8)],
+                'password' => ['bail', 'required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
                 'phoneNumber' => ['bail', 'required', Rule::unique('users', 'phoneNumber')->whereNot('id', $id)],
                 'idCard' => ['bail', 'required', Rule::unique('users', 'idCard')->whereNot('id', $id)],
                 'dateOfBirth' => ['bail', 'required', 'date', 'before:' . now()->subYears(18)->addDays(1)->format('Y-m-d')],
@@ -162,9 +161,7 @@ class UserController extends Controller
                 'currentAddress' => ['bail', 'required', 'max:255'],
                 'img' => [
                     'nullable',
-                    File::image()
-                        ->min('1kb')
-                        ->max('12mb'),
+                    'mimes:jpg,jpeg,png'
                 ],
             ],
             [
@@ -192,22 +189,69 @@ class UserController extends Controller
             ]
         );
 
+        //img
         if ($request->hasFile('img')) {
-            return 'upload image and delete old image';
+
+            if ($user->image) {
+                //find iamge file in public/images directory
+                if (file_exists(public_path('images/' . $user->image)))
+                    unlink('images/' . $user->image);
+            }
+
+            $file = $request->file('img');
+            $extenstion = $file->getClientOriginalExtension();
+            $filename = Str::random(30) . '.' . strval($extenstion);
+            $file->move('images/', $filename);
+            // 'upload image and delete old image'
+            $user->image = $filename;
+        }
+        //password
+        if ($request->input('password') != $user->password) {
+            $user->password = Hash::make($request->input('password'), ['rounds' => 12]);
         }
 
-        return 'use old image';
+        $roleId = $request->input('roleId');
+        $user->roleId = $roleId;
+
+        $role = DB::table('roles')->where('id', '=', $roleId)->first();
+        if ($role->roleNameKh == RoleUnit::HEAD_OF_UNIT || $role->roleNameKh == RoleUnit::DEPUTY_HEAD_OF_UNIT) {
+
+            $user->departmentId = null;
+            $user->officeId = null;
+        } else if ($role->roleNameKh == RoleUnit::DIRECTOR_OF_DEPARTMENT || $role->roleNameKh == RoleUnit::DEPUTY_DIRECTOR_OF_DEPARTMENT) {
+            $user->departmentId = $request->input('departmentId');
+            $user->officeId = null;
+        } else {
+            $officeId = $request->input('officeId');
+            $department = DB::table('offices')->where('id', '=', $officeId)->first();
+            $user->departmentId = $department->departmentId;
+            $user->officeId = $officeId;
+        }
+
+        $user->firstNameKh = $request->input('firstNameKh');
+        $user->lastNameKh = $request->input('lastNameKh');
+        $user->gender = $request->input('gender');
+        $user->email = $request->input('email');
+        $user->phoneNumber = $request->input('phoneNumber');
+        $user->idCard = $request->input('idCard');
+        $user->dateOfBirth = $request->input('dateOfBirth');
+        $user->status = $request->input('status');
+        $user->nationality = $request->input('nationality');
+        $user->pobAddress = $request->input('pobAddress');
+        $user->currentAddress = $request->input('currentAddress');
+        $user->save();
+        return redirect('/users');
     }
 
     public function destroy(string $id)
     {
-        // $user = User::findOrFail($id);
+        $user = User::findOrFail($id);
 
-        // if ($user->image) {
-        //     unlink('images/' . $user->image);
-        // }
+        if ($user->image) {
+            unlink('images/' . $user->image);
+        }
 
-        // $user->delete();
+        $user->delete();
 
         return redirect('/users');
     }

@@ -183,9 +183,19 @@
                         <label for="exampleFormControlInput1">ទំនាក់ទំនង</label>
                         <div class="dropdown show">
                             <select id="active" class="form-control" name="status">
-                                <option value="នៅលីវ">នៅលីវ</option>
-                                <option value="ភ្ជាប់ពាក្យ">ភ្ជាប់ពាក្យ</option>
-                                <option value="រៀបការ">រៀបការ</option>
+                                @if ($user->status == 1)
+                                    <option value="1" selected>នៅលីវ</option>
+                                    <option value="2">ភ្ជាប់ពាក្យ</option>
+                                    <option value="3">រៀបការ</option>
+                                @elseif ($user->status == 2)
+                                    <option value="1">នៅលីវ</option>
+                                    <option value="2" selected>ភ្ជាប់ពាក្យ</option>
+                                    <option value="3">រៀបការ</option>
+                                @else
+                                    <option value="1">នៅលីវ</option>
+                                    <option value="2">ភ្ជាប់ពាក្យ</option>
+                                    <option value="3" selected>រៀបការ</option>
+                                @endif
                             </select>
                         </div>
                     </div>

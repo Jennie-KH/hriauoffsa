@@ -39,7 +39,7 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 <div class="box-img">
-                                    <img src="{{ asset('images/' . $user->image) }}" alt="">
+                                    <img class="img-responsive" src="{{ asset('images/' . $user->image) }}" alt="">
                                 </div>
                             </td>
                             <td>

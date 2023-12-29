@@ -69,15 +69,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
             object-fit: cover;
         }
 
+        tr td {
+            padding-top: 2px !important;
+            padding-bottom: 2px !important;
+            margin: 0 !important;
+        }
+
         .box-img {
+            display: flex;
+            justify-content: center;
+            margin: 0;
             width: 100%;
-            max-width: 50px;
-            height: auto;
+            height: 100%;
         }
 
         .box-img img {
-            height: 100%;
-            width: 100%;
+            height: 50px;
+            width: 50px;
             object-fit: cover;
         }
     </style>
@@ -400,7 +408,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     reader.onload = function(e) {
                         $('.profile-pic').attr('src', e.target.result);
                     }
-                    
+
                     reader.readAsDataURL(input.files[0]);
                 }
             }
