@@ -4,7 +4,7 @@ namespace App\Enum;
 
 class DepartmentUnit
 {
-    const GENERAL = 1;
-    const AUDIT_ONE = 2;
-    const AUDIT_TWO = 3;
+    const GENERAL = "កិច្ចការទូទៅ";
+    const AUDIT_ONE = "សវនកម្មទី១";
+    const AUDIT_TWO = "សវនកម្មទី២";
 }

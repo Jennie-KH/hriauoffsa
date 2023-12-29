@@ -12,31 +12,27 @@
                 {{-- img --}}
                 <div class="row">
                     <div class="col"></div>
-                    <div class="col d-flex justify-content-center">
+                    <div class="col d-flex flex-column justify-content-center align-items-center">
                         <label for="image" id="im">
                             <input type="file" class="file-upload" name="img" id="image" style="display: none" />
                             <div class="circle">
                                 @if ($user->image)
-                                    <img src="{{ asset('images/' . $user->image) }}" alt="" width="100%">
-                                @else
-                                    <img class="profile-pic"
-                                        src="https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
-                                        width="100%" />
+                                    <img class="profile-pic" src="{{ asset('images/' . $user->image) }}" alt=""
+                                        width="100%">
                                 @endif
-
                             </div>
-
-                            @error('img')
-                                <div>{{ $message }}</div>
-                            @enderror
-
-                        </label><br />
+                        </label>
+                        @error('img')
+                            <div class="error-message">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="col"></div>
                 </div>
                 <br>
                 <div class="form-row">
-                    <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="col-lg-3 col-md-12 col-sm-12">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">អត្តលេខ</label>
                             <input type="text" name="idCard" value="{{ $user->idCard }}" class="form-control"
@@ -50,32 +46,45 @@
                         <label for="exampleFormControlInput1">តួនាទី</label>
                         <div class="dropdown show">
                             <select id="active" class="form-control" name="roleId">
-                                {{-- @foreach ($roles as $key => $role) --}}
                                 <option value="{{ $user->roleId }}">{{ $user->role->roleNameKh }}</option>
-                                {{-- @endforeach --}}
+                                @foreach ($roles as $key => $role)
+                                    <option value="{{ $role->id }}">{{ $role->roleNameKh }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2">
-                        <label for="exampleFormControlInput1">នាយកដ្នាន</label>
-                        <div class="dropdown show">
+
+                    <div id="departmentW" class="col-lg-3 col-md-6 col-sm-12 pb-2">
+                        <label for="exampleFormControlInput1">នាយកដ្ឋាន</label>
+                        <div class="dropdown show" id="exampleFormControlInput1">
                             <select id="department" class="form-control" name="departmentId">
-                                <option value="{{ $user->departmentId }}">{{ $user->department->departmentNameKh }}</option>
-                                {{-- @foreach ($departments as $key => $department)
-                                    <option value="{{ $department->id }}">{{ $department->departmentNameKh }}</option>
-                                @endforeach --}}
+                                @if ($user->departmentId)
+                                    <option value="{{ $user->departmentId }}">{{ $user->department->departmentNameKh }}
+                                    </option>
+                                @endif
+                                @foreach ($departments as $key => $department)
+                                    <option value="{{ $department->id }}">{{ $department->departmentNameKh }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
+
 
                     <div class="col-lg-3 col-md-6 col-sm-12 pb-2">
                         <label for="exampleFormControlInput1">ការិយាល័យ</label>
                         <div class="dropdown show">
                             <select id="office" class="form-control" name="officeId">
-                                <option>{{ $user->office->officeNameKh }}</option>
+                                @if ($user->officeId)
+                                    <option value="{{ $user->officeId }}">{{ $user->office->officeNameKh }}</option>
+                                @endif
+                                @foreach ($offices as $office)
+                                    <option value="{{ $office->id }}">{{ $office->officeNameKh }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
+
                 </div>
                 <div class="form-row">
 

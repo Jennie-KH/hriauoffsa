@@ -400,7 +400,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     reader.onload = function(e) {
                         $('.profile-pic').attr('src', e.target.result);
                     }
-
+                    
                     reader.readAsDataURL(input.files[0]);
                 }
             }

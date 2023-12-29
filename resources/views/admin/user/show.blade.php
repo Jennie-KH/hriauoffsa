@@ -25,7 +25,7 @@
                 </div>
                 <br>
                 <div class="form-row">
-                    <div class="col-lg-3 col-sm-12">
+                    <div id="idCardWw" class="col-lg-3 col-sm-12">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">អត្តលេខ</label>
                             <input type="text" name="idCard" value="{{ $user->idCard }}" class="form-control"
@@ -35,7 +35,8 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-12 pb-2">
+
+                    <div id="roleWw" class="col-lg-3 col-sm-12 pb-2">
                         <label for="exampleFormControlInput1">តួនាទី</label>
                         <div class="dropdown show">
                             <select id="active" class="form-control" name="roleId" disabled>
@@ -43,23 +44,50 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-12 pb-2">
-                        <label for="exampleFormControlInput1">នាយកដ្នាន</label>
-                        <div class="dropdown show">
-                            <select id="department" class="form-control" name="departmentId" disabled>
-                                <option value="{{ $user->departmentId }}">{{ $user->department->departmentNameKh }}</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-3 col-sm-12 pb-2">
-                        <label for="exampleFormControlInput1">ការិយាល័យ</label>
-                        <div class="dropdown show">
-                            <select id="office" class="form-control" name="officeId" disabled>
-                                <option value="{{ $user->officeId }}">{{ $user->office->officeNameKh }}</option>
-                            </select>
+                    @if ($user->departmentId)
+                        <div id="departmentWw" class="col-lg-3 col-md-6 col-sm-12 pb-2">
+                            <label for="exampleFormControlInput1">នាយកដ្ឋាន</label>
+                            <div class="dropdown show" id="exampleFormControlInput1">
+                                <select id="department" class="form-control" name="departmentId" disabled>
+                                    <option value="{{ $user->departmentId }}">{{ $user->department->departmentNameKh }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
+
+                    @if ($user->officeId)
+                        <div class="col-lg-3 col-sm-12 pb-2">
+                            <label for="exampleFormControlInput1">ការិយាល័យ</label>
+                            <div class="dropdown show">
+                                <select id="office" class="form-control" name="officeId" disabled>
+                                    <option value="{{ $user->officeId }}">{{ $user->office->officeNameKh }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($user->role->roleNameKh == 'ប្រធានអង្គភាព' || $user->role->roleNameKh == 'អនុប្រធានអង្គភាព')
+                        <script>
+                            var roleWw = document.getElementById("roleWw");
+                            var idCardWw = document.getElementById("idCardWw");
+
+                            roleWw.className = "col-lg-6 col-md-6 col-sm-12 pb-2";
+                            idCardWw.className = "col-lg-6 col-md-6 col-sm-12 pb-2";
+                        </script>
+                    @elseif ($user->role->roleNameKh == 'ប្រធាននាយកដ្ឋាន' || $user->role->roleNameKh == 'អនុប្រធាននាយកដ្ឋាន')
+                        <script>
+                            var roleWw = document.getElementById("roleWw");
+                            var idCardWw = document.getElementById("idCardWw");
+                            var departmentWw = document.getElementById("departmentWw");
+
+                            roleWw.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                            idCardWw.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                            departmentWw.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                        </script>
+                    @endif
+
                 </div>
                 <div class="form-row">
                     <div class="col-lg-3 col-sm-12">
@@ -126,7 +154,7 @@
                     <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">លេខកូដ</label>
-                            <input type="password" name="password" value="{{ $user->password }}" class="form-control"
+                            <input type="text" name="password" value="{{ $user->password }}" class="form-control"
                                 id="exampleFormControlInput1" placeholder="លេខកូដ" disabled>
                             @error('password')
                                 <p style="color: red">{{ $message }}</p>

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('roleNameKh', 100)->unique();
             $table->string('description', 255)->nullable();
-            $table->string('active', 2);
+            $table->string('active', 2)->default(1);
             $table->timestamps();
             // Specify the storage engine as InnoDB
             // $table->engine = 'InnoDB';

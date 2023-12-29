@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('roleId')->constrained('roles')->onDelete('cascade');
-            $table->foreignId('departmentId')->constrained('departments')->onDelete('cascade');
-            $table->foreignId('officeId')->constrained('offices')->onDelete('cascade');
+            $table->foreignId('departmentId')->nullable()->constrained('departments');
+            $table->foreignId('officeId')->nullable()->constrained('offices');
             $table->string('firstNameKh', 100);
             $table->string('lastNameKh', 100);
             $table->string('gender', 2);
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('pobAddress', 255);
             $table->string('currentAddress', 255);
             $table->string('image', 255)->nullable();
-            $table->string('active', 2);
+            $table->string('active', 2)->default(1);
             $table->timestamps();
             // Specify the storage engine as InnoDB
             // $table->engine = 'InnoDB';

@@ -11,33 +11,28 @@ use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\File;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $users = User::all();
         return view('admin.user.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::select()->orderBy('id', 'desc')->get();
         $departments = Department::all();
         $offices = Office::all();
-        return view('admin.user.create', compact('roles', 'departments', 'offices'));
+
+        return view('admin.user.create', compact('roles', 'offices', 'departments'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate(
@@ -49,19 +44,32 @@ class UserController extends Controller
                 'phoneNumber' => ['bail', 'required', Rule::unique('users', 'phoneNumber')],
                 'idCard' => ['bail', 'required', Rule::unique('users', 'idCard')],
                 'dateOfBirth' => ['bail', 'required', 'date', 'before:' . now()->subYears(18)->addDays(1)->format('Y-m-d')],
-                'nationality' => ['bail', 'required'],
+                'nationality' => ['required', 'max:100'],
                 'pobAddress' => ['bail', 'required', 'max:255'],
                 'currentAddress' => ['bail', 'required', 'max:255'],
                 'img' => 'required',
             ],
             [
-                'firstNameKh.required' => '',
+                'firstNameKh.required' => 'សូមបញ្ចូលនាមខ្លួន',
+                'firstNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'lastNameKh.required' => 'សូមបញ្ចូលនាមជីតា',
+                'lastNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'email.required' => 'សូមបញ្ចូលអ៊ីម៉ែលរបស់អ្នក',
                 'email.unique' => 'អ៊ីម៉ែលមានរួចហើយ',
+                'password.required' => 'សូមបញ្ចូលលេខសម្ងាត់',
+                'phoneNumber.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
                 'phoneNumber.unique' => 'លេខទូរស័ព្ទមានរួចហើយ',
+                'idCard.required' => 'សូមបញ្ចូលអត្តលេខ',
                 'idCard.unique' => 'អត្តលេខមានរួចហើយ',
+                'nationality.required' => 'សូមបញ្ចូលសញ្ជាតិ',
+                'nationality.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
                 'pobAddress.required' => 'សូមបញ្ចូលទីកន្លែងកំណើត',
+                'pobAddress.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ',
                 'currentAddress.required' => 'សូមបញ្ចូលទីកន្លែងបច្ចុប្បន្ន',
-                // 'dateOfBirth.before' => 'អយុរបស់អ្នកមិនទាន់គ្រប់​ ១៨ ទេ',
+                'currentAddress.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥ តួរ',
+                'dateOfBirth.required' => 'សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត',
+                'dateOfBirth.before' => 'អាយុរបស់អ្នកត្រូវលើស​ ១៨ ឆ្នាំ',
+                'img.required' => 'សូមបញ្ចូលរូបភាព',
             ]
         );
 
@@ -75,19 +83,31 @@ class UserController extends Controller
             $filename = '';
         }
 
-        // $studentImg = Str::random(20) . '.' . $request->file('photo')->getClientOriginalExtension();
-        // Storage::disk('public')->put($studentImg, file_get_contents($request->file('img')));
-
         $user = new User();
-        $user->roleId = $request->input('roleId');
-        // if ($user->roleId != RoleUnit::HEAD_OF_UNIT)
-        $user->departmentId = $request->input('departmentId');
-        $user->officeId = $request->input('officeId');
+
+        $roleId = $request->input('roleId');
+        $user->roleId = $roleId;
+
+        $role = DB::table('roles')->where('id', '=', $roleId)->first();
+        if ($role->roleNameKh == RoleUnit::HEAD_OF_UNIT || $role->roleNameKh == RoleUnit::DEPUTY_HEAD_OF_UNIT) {
+
+            $user->departmentId = null;
+            $user->officeId = null;
+        } else if ($role->roleNameKh == RoleUnit::DIRECTOR_OF_DEPARTMENT || $role->roleNameKh == RoleUnit::DEPUTY_DIRECTOR_OF_DEPARTMENT) {
+            $user->departmentId = $request->input('departmentId');
+            $user->officeId = null;
+        } else {
+            $officeId = $request->input('officeId');
+            $department = DB::table('offices')->where('id', '=', $officeId)->first();
+            $user->departmentId = $department->departmentId;
+            $user->officeId = $officeId;
+        }
+
         $user->firstNameKh = $request->input('firstNameKh');
         $user->lastNameKh = $request->input('lastNameKh');
         $user->gender = $request->input('gender');
         $user->email = $request->input('email');
-        $user->password = $request->input('password');
+        $user->password = Hash::make($request->input('password'));
         $user->phoneNumber = $request->input('phoneNumber');
         $user->idCard = $request->input('idCard');
         $user->dateOfBirth = $request->input('dateOfBirth');
@@ -96,7 +116,6 @@ class UserController extends Controller
         $user->pobAddress = $request->input('pobAddress');
         $user->currentAddress = $request->input('currentAddress');
         $user->image = $filename;
-        $user->active = Active::ACTIVE;
         $user->save();
         return redirect('/users');
     }
@@ -104,29 +123,91 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::findOrFail($id);
-        // return $user->role->roleNameKh;
         return view('admin.user.show', compact('user'));
     }
 
     public function edit(string $id)
     {
-        $user = User::find($id);
-        return view('admin.user.edit', compact('user'));
+        $user = User::findOrFail($id);
+        $roles = DB::table('roles')->select('id', 'roleNameKh')->where('id', '!=', $user->roleId)->orderBy('id', 'desc')->get();
+        $queryOffices = Office::select('id', 'officeNameKh');
+        $queryDepartments = Department::select('id', 'departmentNameKh');
+
+        if ($user->departmentId != null) {
+            $queryDepartments->where('id', '!=', $user->departmentId);
+        }
+        if ($user->officeId != null) {
+            $queryOffices->where('id', '!=', $user->officeId);
+        }
+
+        $offices = $queryOffices->get();
+        $departments = $queryDepartments->get();
+
+        return view('admin.user.edit', compact('user', 'roles', 'departments', 'offices'));
     }
 
     public function update(Request $request, string $id)
     {
+        $request->validate(
+            [
+                'firstNameKh' => ['bail', 'required', 'max:100'],
+                'lastNameKh' => ['bail', 'required', 'max:100'],
+                'email' => ['bail', 'required', 'email', Rule::unique('users', 'email')->whereNot('id', $id)],
+                'password' => ['bail', 'required', Password::min(8)],
+                'phoneNumber' => ['bail', 'required', Rule::unique('users', 'phoneNumber')->whereNot('id', $id)],
+                'idCard' => ['bail', 'required', Rule::unique('users', 'idCard')->whereNot('id', $id)],
+                'dateOfBirth' => ['bail', 'required', 'date', 'before:' . now()->subYears(18)->addDays(1)->format('Y-m-d')],
+                'nationality' => ['required', 'max:100'],
+                'pobAddress' => ['bail', 'required', 'max:255'],
+                'currentAddress' => ['bail', 'required', 'max:255'],
+                'img' => [
+                    'nullable',
+                    File::image()
+                        ->min('1kb')
+                        ->max('12mb'),
+                ],
+            ],
+            [
+                'firstNameKh.required' => 'សូមបញ្ចូលនាមខ្លួន',
+                'firstNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'lastNameKh.required' => 'សូមបញ្ចូលនាមជីតា',
+                'lastNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'email.required' => 'សូមបញ្ចូលអ៊ីម៉ែលរបស់អ្នក',
+                'email.unique' => 'អ៊ីម៉ែលមានរួចហើយ',
+                'password.required' => 'សូមបញ្ចូលលេខសម្ងាត់',
+                'password.min' => 'សូមបញ្ចូលលេខសម្ងាត់យ៉ាងតិច ៨ ខ្ទង់',
+                'phoneNumber.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
+                'phoneNumber.unique' => 'លេខទូរស័ព្ទមានរួចហើយ',
+                'idCard.required' => 'សូមបញ្ចូលអត្តលេខ',
+                'idCard.unique' => 'អត្តលេខមានរួចហើយ',
+                'nationality.required' => 'សូមបញ្ចូលសញ្ជាតិ',
+                'nationality.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'pobAddress.required' => 'សូមបញ្ចូលទីកន្លែងកំណើត',
+                'pobAddress.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ',
+                'currentAddress.required' => 'សូមបញ្ចូលទីកន្លែងបច្ចុប្បន្ន',
+                'currentAddress.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥ តួរ',
+                'dateOfBirth.required' => 'សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត',
+                'dateOfBirth.before' => 'អាយុរបស់អ្នកត្រូវលើស​ ១៨ ឆ្នាំ',
+                'img.required' => 'សូមបញ្ចូលរូបភាព',
+            ]
+        );
+
+        if ($request->hasFile('img')) {
+            return 'upload image and delete old image';
+        }
+
+        return 'use old image';
     }
 
     public function destroy(string $id)
     {
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
 
-        if ($user->image) {
-            unlink('images/' . $user->image);
-        }
+        // if ($user->image) {
+        //     unlink('images/' . $user->image);
+        // }
 
-        $user->delete();
+        // $user->delete();
 
         return redirect('/users');
     }

@@ -10,7 +10,7 @@
                 @csrf
                 <input type="hidden" name="_method" value="PUT">
                 <div class="form-row">
-                    <div class="col">
+                    <div class="col-lg-4 col-md-6 col-sm-12 pb-2">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">ការិយាល័យ</label>
                             <input type="text" value="{{ $office->officeNameKh }}" name="officeNameKh"
@@ -20,7 +20,19 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-4 col-md-6 col-sm-12 pb-2">
+                        <label for="exampleFormControlInput1">នាយកដ្នាន</label>
+                        <div class="dropdown show">
+                            <select id="department" class="form-control" name="departmentId">
+                                <option value="{{ $office->departmentId }}">{{ $office->department->departmentNameKh }}
+                                </option>
+                                @foreach ($departments as $key => $department)
+                                    <option value="{{ $department->id }}">{{ $department->departmentNameKh }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 pb-2">
                         <label for="exampleFormControlInput1">ស្ថានភាព</label>
                         <div class="dropdown show">
                             <select id="active" class="form-control" name="active">

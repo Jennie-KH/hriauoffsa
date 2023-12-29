@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
-            $table->string('officeNameKh',100);
-            $table->string('description',255)->nullable();
+            $table->foreignId('departmentId')->constrained('departments')->onDelete('cascade');
+            $table->string('officeNameKh', 100);
+            $table->string('description', 255)->nullable();
             $table->string('active', 5)->default(1);
             $table->timestamps();
         });

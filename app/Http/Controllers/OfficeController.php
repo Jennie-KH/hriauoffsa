@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enum\Active;
+use App\Models\Department;
 use App\Models\Office;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,8 @@ class OfficeController extends Controller
      */
     public function create()
     {
-        return view('admin.office.create');
+        $departments = Department::all();
+        return view('admin.office.create', compact('departments'));
     }
 
     /**
@@ -36,6 +38,7 @@ class OfficeController extends Controller
             'description.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ'
         ]);
         $office = new Office();
+        $office->departmentId = $request->input('departmentId');
         $office->officeNameKh = $request->input('officeNameKh');
         $office->description = $request->input('description');
         $office->active = Active::ACTIVE;
@@ -59,7 +62,8 @@ class OfficeController extends Controller
     public function edit(string $officeId)
     {
         $office = Office::findOrFail($officeId);
-        return view('admin.office.edit', compact('office'));
+        $departments = Department::all()->where('id', '!=', $office->departmentId);
+        return view('admin.office.edit', compact('office', 'departments'));
     }
 
     /**
@@ -75,7 +79,9 @@ class OfficeController extends Controller
             'departmentNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
             'description.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ'
         ]);
+
         $office = Office::findOrFail($officeId);
+        $office->departmentId = $request->input('departmentId');
         $office->officeNameKh = $request->input('officeNameKh');
         $office->description = $request->input('description');
         $office->active = $request->input('active');
@@ -89,6 +95,6 @@ class OfficeController extends Controller
      */
     public function destroy(Office $office)
     {
-        //
+        return redirect('/offices');
     }
 }

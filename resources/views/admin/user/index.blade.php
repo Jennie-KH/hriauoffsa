@@ -12,6 +12,7 @@
                     <tr>
                         <th>ល.រ</th>
                         <th>ឈ្មោះ</th>
+                        <th>តួនាទី</th>
                         <th>ភេទ</th>
                         <th>លេខទូរស័ព្ទ</th>
                         <th>អ៊ីម៉ែល</th>
@@ -24,6 +25,7 @@
                         <tr>
                             <td scope="row">{{ $key + 1 }}</td>
                             <td>{{ $user->lastNameKh }} {{ $user->firstNameKh }}</td>
+                            <td>{{ $user->role->roleNameKh }}</td>
                             <td>
                                 @if ($user->gender == 'f')
                                     ស្រី

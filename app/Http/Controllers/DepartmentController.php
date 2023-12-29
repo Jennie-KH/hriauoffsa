@@ -87,8 +87,8 @@ class DepartmentController extends Controller
      */
     public function destroy(string $departmentId)
     {
-        $department = Department::findOrFail($departmentId);
-        $department->delete();
+        // $department = Department::findOrFail($departmentId);
+        // $department->delete();
         return redirect('/departments');
     }
 }

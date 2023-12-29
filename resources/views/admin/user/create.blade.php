@@ -11,26 +11,26 @@
                 {{-- img --}}
                 <div class="row">
                     <div class="col"></div>
-                    <div class="col d-flex justify-content-center">
+                    <div class="col d-flex flex-column justify-content-center align-items-center">
                         <label for="image" id="im">
                             <input type="file" class="file-upload" name="img" id="image" style="display: none" />
-                            <div class="circle">
+                            <div class="circle" id="im">
                                 <img class="profile-pic"
                                     src="https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
                                     width="100%" />
                             </div>
-
-                            @error('img')
-                                <div>{{ $message }}</div>
-                            @enderror
-
-                        </label><br />
+                        </label>
+                        @error('img')
+                            <div class="error-message">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="col"></div>
                 </div>
                 <br>
                 <div class="form-row">
-                    <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div id="cardIdW" class="col-lg-4 col-md-6 col-sm-12">
                         <div class="form-group">
                             <label for="exampleFormControlInput1">អត្តលេខ</label>
                             <input type="text" name="idCard" value="{{ old('idCard') }}" class="form-control"
@@ -41,32 +41,100 @@
                         </div>
                     </div>
 
-                    <div id="role" class="col-lg-3 col-md-6 col-sm-12 pb-2">
+                    <div id="roleW" class="col-lg-4 col-md-6 col-sm-12 pb-2">
                         <label for="exampleFormControlInput1">តួនាទី</label>
                         <div class="dropdown show" id="exampleFormControlInput1">
-                            <select class="form-control" name="roleId">
+                            <select onchange="getValue()" id="role" class="form-control" name="roleId">
                                 @foreach ($roles as $key => $role)
-                                    <option value="{{ $role->id }}">{{ $role->roleNameKh }}</option>
+                                    <option value="{{ $role->id }}">{{ $role->roleNameKh }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2">
-                        <label for="exampleFormControlInput1">នាយកដ្នាន</label>
-                        <div class="dropdown show">
+                    <script>
+                        var myRole = @json($roles);
+
+                        function getValue() {
+                            var roleIdHtml = document.getElementById("role").value;
+                            var roleIdheadOfUnit = 0;
+                            var roleIddeputyHeadOfUnit = 0;
+                            var roleIddeputyHeadOfUnit = 0;
+                            var roleIddirctorOfDepartment = 0;
+                            var roleIddeputyDirctorOfDepartment = 0;
+                            var roleIdheadOfOffice = 0;
+                            var roleIddeputyHeadOfOffice = 0;
+                            var roleIdofficer = 0;
+
+                            myRole.forEach(element => {
+                                if (element.roleNameKh == "ប្រធានអង្គភាព") {
+                                    roleIdheadOfUnit = element.id;
+                                } else if (element.roleNameKh == "អនុប្រធានអង្គភាព") {
+                                    roleIddeputyHeadOfUnit = element.id;
+                                } else if (element.roleNameKh == "ប្រធាននាយកដ្ឋាន") {
+                                    roleIddirctorOfDepartment = element.id;
+                                } else if (element.roleNameKh == "អនុប្រធាននាយកដ្ឋាន") {
+                                    roleIddeputyDirctorOfDepartment = element.id;
+                                } else if (element.roleNameKh == "ប្រធានការិយាល័យ") {
+                                    roleIdheadOfOffice = element.id;
+                                } else if (element.roleNameKh == "អនុប្រធានការិយាល័យ") {
+                                    roleIddeputyHeadOfOffice = element.id;
+                                } else {
+                                    roleIdofficer = element.id;
+                                }
+                            });
+
+                            var cardId = document.getElementById('cardIdW');
+                            var role = document.getElementById('roleW');
+                            var department = document.getElementById('departmentW');
+                            var office = document.getElementById('officeW');
+
+                            if (roleIdHtml == roleIdheadOfUnit || roleIdHtml == roleIddeputyHeadOfUnit) {
+                                office.style.display = "none";
+                                department.style.display = "none";
+                                cardId.className = "col-lg-6 col-md-6 col-sm-12 pb-2";
+                                role.className = "col-lg-6 col-md-6 col-sm-12 pb-2";
+                            } else if (roleIdHtml == roleIddirctorOfDepartment || roleIdHtml == roleIddeputyDirctorOfDepartment) {
+                                office.style.display = "none";
+                                department.style.display = "block";
+                                cardId.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                role.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                department.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                            } else if (roleIdHtml == roleIdheadOfOffice || roleIdHtml == roleIddeputyHeadOfOffice || roleIdHtml ==
+                                roleIdofficer) {
+                                office.style.display = "block";
+                                department.style.display = "none";
+                                cardId.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                role.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                office.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                            } else {
+                                office.style.display = "block";
+                                department.style.display = "none";
+                                cardId.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
+                                role.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
+                                office.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
+                                department.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
+                            }
+                        }
+                    </script>
+
+                    <div id="departmentW" style="display: none" class="col-lg-3 col-md-6 col-sm-12 pb-2">
+                        <label for="exampleFormControlInput1">នាយកដ្ឋាន</label>
+                        <div class="dropdown show" id="exampleFormControlInput1">
                             <select id="department" class="form-control" name="departmentId">
                                 @foreach ($departments as $key => $department)
-                                    <option value="{{ $department->id }}">{{ $department->departmentNameKh }}</option>
+                                    <option value="{{ $department->id }}">{{ $department->departmentNameKh }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 pb-2">
+                    <div id="officeW" class="col-lg-4 col-md-6 col-sm-12 pb-2">
                         <label for="exampleFormControlInput1">ការិយាល័យ</label>
                         <div class="dropdown show">
-                            <select id="office" class="form-control" name="officeId">
+                            <select id="office" id="office" class="form-control" name="officeId">
                                 @foreach ($offices as $office)
                                     <option value="{{ $office->id }}">{{ $office->officeNameKh }}</option>
                                 @endforeach
@@ -137,9 +205,9 @@
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">លេខកូដ</label>
+                            <label for="exampleFormControlInput1">លេខសម្ងាត់</label>
                             <input type="password" name="password" value="{{ old('password') }}" class="form-control"
-                                id="exampleFormControlInput1" placeholder="លេខកូដ">
+                                id="exampleFormControlInput1" placeholder="លេខសម្ងាត់">
                             @error('password')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
