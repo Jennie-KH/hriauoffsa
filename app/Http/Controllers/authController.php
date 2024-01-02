@@ -11,13 +11,16 @@ class authController extends Controller
     {
         $request->validate([
             'username' => 'required',
+            'password' => 'required'
         ], [
-            'username.required' => 'Please input the username'
+            'username.required' => 'Please input the username',
+            'password.required' => 'Please input the password'
         ]);
 
         $username = $request->input('username');
+        $password = $request->input('password');
 
-        if ($username == 'admin') {
+        if ($username == 'admin' && $password == 123) {
             session(['is_logged_in' => true, 'user_id' => 987]);
             // return Redirect::route('admin');
             return redirect('/users');

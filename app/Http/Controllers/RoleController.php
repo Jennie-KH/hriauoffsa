@@ -30,8 +30,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        // Role::create($request->all());
-        // return redirect('/');
+        
         $request->validate([
             'roleNameKh' => 'bail|required|max:100',
             'description' => 'max:255'

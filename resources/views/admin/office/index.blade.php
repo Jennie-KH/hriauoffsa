@@ -27,11 +27,11 @@
                             <td>{{ $item->description }}</td>
 
                             @if ($item->active == 1)
-                                <td style="color: green">Active</td>
+                                <td style="color: green">សកម្ម</td>
                             @elseif ($item->active == 2)
-                                <td style="color: red">Deactive</td>
+                                <td style="color: red">អសកម្ម</td>
                             @else
-                                <td style="color: blue">Pending</td>
+                                <td style="color: blue">ព្យួរ</td>
                             @endif
                             <td>
                                 <div class="d-flex justify-content-center align-items-center">

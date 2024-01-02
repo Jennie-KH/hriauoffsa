@@ -28,7 +28,11 @@
                                 @foreach ($departments as $key => $department)
                                     <option value="{{ $department->id }}">{{ $department->departmentNameKh }}</option>
                                 @endforeach
+                                <option value="5">ssss</option>
                             </select>
+                            @error('departmentId')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>

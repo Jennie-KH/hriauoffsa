@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -36,8 +35,11 @@ class UserController extends Controller
     {
         $request->validate(
             [
+                'roleId' => ['required', Rule::exists('roles', 'id')],
                 'firstNameKh' => ['bail', 'required', 'max:100'],
                 'lastNameKh' => ['bail', 'required', 'max:100'],
+                'departmentId' => ['nullable', Rule::exists('departments', 'id')],
+                'officeId' => ['nullable', Rule::exists('offices', 'id')],
                 'email' => ['bail', 'required', 'email', Rule::unique('users', 'email')],
                 'password' => ['bail', 'required', Password::min(8)->mixedCase()->letters()->numbers()->symbols()],
                 'phoneNumber' => ['bail', 'required', Rule::unique('users', 'phoneNumber')],
@@ -49,10 +51,13 @@ class UserController extends Controller
                 'img' => 'required',
             ],
             [
+                'roleId.exists' => 'ឈ្មោះតួនាទីមិនត្រឹមត្រូវ',
                 'firstNameKh.required' => 'សូមបញ្ចូលនាមខ្លួន',
                 'firstNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
                 'lastNameKh.required' => 'សូមបញ្ចូលនាមជីតា',
                 'lastNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+                'officeId.exists' => 'ឈ្មោះការិយាល័យមិនត្រឹមត្រូវ',
+                'departmentId.exists' => 'ឈ្មោះនាយកដ្ឋានមិនត្រឹមត្រូវ',
                 'email.required' => 'សូមបញ្ចូលអ៊ីម៉ែលរបស់អ្នក',
                 'email.unique' => 'អ៊ីម៉ែលមានរួចហើយ',
                 'password.required' => 'សូមបញ្ចូលលេខសម្ងាត់',
@@ -215,7 +220,6 @@ class UserController extends Controller
 
         $role = DB::table('roles')->where('id', '=', $roleId)->first();
         if ($role->roleNameKh == RoleUnit::HEAD_OF_UNIT || $role->roleNameKh == RoleUnit::DEPUTY_HEAD_OF_UNIT) {
-
             $user->departmentId = null;
             $user->officeId = null;
         } else if ($role->roleNameKh == RoleUnit::DIRECTOR_OF_DEPARTMENT || $role->roleNameKh == RoleUnit::DEPUTY_DIRECTOR_OF_DEPARTMENT) {

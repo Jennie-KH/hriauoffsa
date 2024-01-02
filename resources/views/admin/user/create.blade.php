@@ -50,6 +50,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('roleId')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -111,10 +114,9 @@
                             } else {
                                 office.style.display = "block";
                                 department.style.display = "none";
-                                cardId.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
-                                role.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
-                                office.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
-                                department.className = "col-lg-3 col-md-6 col-sm-12 pb-2";
+                                cardId.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                role.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
+                                office.className = "col-lg-4 col-md-6 col-sm-12 pb-2";
                             }
                         }
                     </script>
@@ -127,7 +129,11 @@
                                     <option value="{{ $department->id }}">{{ $department->departmentNameKh }}
                                     </option>
                                 @endforeach
+                                <option value="100">departmensss</option>
                             </select>
+                            @error('departmentId')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -139,6 +145,9 @@
                                     <option value="{{ $office->id }}">{{ $office->officeNameKh }}</option>
                                 @endforeach
                             </select>
+                            @error('officeId')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 

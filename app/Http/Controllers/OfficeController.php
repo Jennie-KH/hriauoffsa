@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enum\Active;
-use App\Models\Department;
 use App\Models\Office;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class OfficeController extends Controller
 {
@@ -31,10 +32,12 @@ class OfficeController extends Controller
     {
         $request->validate([
             'officeNameKh' => 'bail|required|max:100',
+            'departmentId' => ['required', Rule::exists('departments', 'id')],
             'description' => 'max:255'
         ], [
             'officeNameKh.required' => 'សូមបញ្ចូលនូវឈ្មោះការិយាល័យ',
             'officeNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+            'departmentId.exists' => 'ឈ្មោះនាយកដ្ឋានមិនត្រឹមត្រូវ',
             'description.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ'
         ]);
         $office = new Office();
@@ -73,10 +76,12 @@ class OfficeController extends Controller
     {
         $request->validate([
             'officeNameKh' => 'bail|required|max:100',
+            'departmentId' => ['required', Rule::exists('departments', 'id')],
             'description' => 'max:255'
         ], [
             'officeNameKh.required' => 'សូមបញ្ចូលនូវឈ្មោះនាយកដ្ឋាន',
             'departmentNameKh.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ១០០​ តួរ',
+            'departmentId.exists' => 'ឈ្មោះនាយកដ្ឋានមិនត្រឹមត្រូវ',
             'description.max' => 'អក្សរអនុញ្ញាតត្រឹម​ ២៥៥​ តួរ'
         ]);
 

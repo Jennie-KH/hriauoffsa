@@ -320,7 +320,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <a href="/logout" class="nav-link">
                                 <i class='fas fa-sign-out-alt' style="color: red"></i>
                                 <p>
-                                    Logout
+                                    ចាកចេញ
                                     {{-- <span class="right badge badge-danger">go</span> --}}
                                 </p>
 
