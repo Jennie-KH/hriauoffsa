@@ -11,13 +11,18 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+
     public function index()
     {
+        $agent = new Agent();
+        $device = $agent->device();
+
         $users = User::all();
         return view('admin.user.index', compact('users'));
     }

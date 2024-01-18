@@ -9,6 +9,7 @@ class authController extends Controller
 {
     public function login(Request $request)
     {
+        $this->getAttendances();
         $request->validate([
             'username' => 'required',
             'password' => 'required'

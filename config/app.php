@@ -70,7 +70,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // 'timezone' => 'UTC',
+    'timezone' => 'Asia/Phnom_Penh',
 
     /*
     |--------------------------------------------------------------------------
@@ -160,6 +161,8 @@ return [
          * Package Service Providers...
          */
 
+        Jenssegers\Agent\AgentServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -182,6 +185,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
         // 'Example' => App\Facades\Example::class,
         'date_format' => env('DATE_FORMAT', 'Y-m-d'),
     ])->toArray(),
