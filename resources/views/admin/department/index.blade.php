@@ -7,7 +7,7 @@
             <h5 class="m-0"><a href="/departments/create" class="btn btn-success btn-sm">បន្ថែមនាយកដ្ឋាន</a></h5>
         </div>
         <div class="card-body table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-sm table-bordered">
                 <thead class="thead-dark ">
                     <tr>
                         <th>លរ</th>

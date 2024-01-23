@@ -129,7 +129,6 @@
                                     <option value="{{ $department->id }}">{{ $department->departmentNameKh }}
                                     </option>
                                 @endforeach
-                                <option value="100">departmensss</option>
                             </select>
                             @error('departmentId')
                                 <div class="error-message">{{ $message }}</div>
@@ -166,7 +165,7 @@
                     </div>
                     <div class="col-lg-3 col-sm-12">
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">នាមជីតា</label>
+                            <label for="exampleFormControlInput1">គោត្តនាម</label>
                             <input type="text" name="lastNameKh" value="{{ old('lastNameKh') }}" class="form-control"
                                 id="exampleFormControlInput1" placeholder="នាមជីតា">
                             @error('lastNameKh')

@@ -7,7 +7,7 @@
             <h5 class="m-0"><a href="/users/create" class="btn btn-success btn-sm">បន្ថែមមន្ត្រី</a></h5>
         </div>
         <div class="card-body table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-sm table-bordered">
                 <thead class="thead-dark ">
                     <tr>
                         <th>ល.រ</th>

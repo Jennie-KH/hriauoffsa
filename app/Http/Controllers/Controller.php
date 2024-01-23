@@ -6,6 +6,7 @@ use DateTime;
 use DateInterval;
 use App\Models\Attendance;
 use Rats\Zkteco\Lib\ZKTeco;
+use Illuminate\Support\Carbon;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -114,6 +115,11 @@ class Controller extends BaseController
             $startDate = date('Y-m-d', strtotime('Monday this week'));
             $endDate = date('Y-m-d', strtotime('Sunday this week'));
             $dates = [$startDate, $endDate];
+        } elseif ($period == 'last_week') {
+
+            $startDate = date('Y-m-d', strtotime('Monday last week'));
+            $endDate = date('Y-m-d', strtotime('Sunday last week'));
+            $dates = [$startDate, $endDate];
         } elseif ($period == 'last_month') {
 
             $year = date('Y');
@@ -165,5 +171,22 @@ class Controller extends BaseController
             $dates = [$startDate, $endDate];
         }
         return $dates;
+    }
+
+    public function checkIn($date)
+    {
+        $checkIn = ['', ''];
+        $morningStart = Carbon::parse($date)->format('Y-m-d 06:30:00');
+        $morningEnd = Carbon::parse($date)->format('Y-m-d 09:00:00');
+        $checkIn = [$morningStart, $morningEnd];
+        return $checkIn;
+    }
+    public function checkOut($date)
+    {
+        $checkOut = ['', ''];
+        $eveningStart = Carbon::parse($date)->format('Y-m-d 16:00:00');
+        $eveningEnd = Carbon::parse($date)->format('Y-m-d 17:30:00');
+        $checkOut = [$eveningStart, $eveningEnd];
+        return $checkOut;
     }
 }

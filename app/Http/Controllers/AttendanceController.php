@@ -31,24 +31,22 @@ class AttendanceController extends Controller
         return view('admin.attendance.attendance', compact('attendances'));
     }
 
-    public function showUser(Request $request, string $userId)
+    public function showAttendanceByUserId(Request $request, string $userId)
     {
-
+        $date = Carbon::today();
         $user = User::all()->where('id', $userId)->first();
 
-        $morningStart = Carbon::today()->format('Y-m-d 06:30:00');
-        $morningEnd = Carbon::today()->format('Y-m-d 09:00:00');
-
-        $eveningStart = Carbon::today()->format('Y-m-d 16:00:00');
-        $eveningEnd = Carbon::today()->format('Y-m-d 17:30:00');
+        //today
+        $morning = $this->checkIn($date);
+        $evening = $this->checkOut($date);
 
         $attendanceFirst = DB::table('attendances')->select('id', 'userId', 'timeScan')
             ->where('userId', $user->idCard)
-            ->whereBetween('timeScan', [$morningStart, $morningEnd])->orderBy('id', 'asc')->first();
+            ->whereBetween('timeScan', [$morning[0], $morning[1]])->orderBy('id', 'asc')->first();
 
         $attendanceLast = DB::table('attendances')->select('id', 'userId', 'timeScan')
             ->where('userId', $user->idCard)
-            ->whereBetween('timeScan', [$eveningStart, $eveningEnd])->orderBy('id', 'desc')->first();
+            ->whereBetween('timeScan', [$evening[0], $evening[1]])->orderBy('id', 'desc')->first();
 
         if ($attendanceFirst == null) {
             $date1 = Carbon::now();
@@ -68,8 +66,63 @@ class AttendanceController extends Controller
         $y = Carbon::now()->format("Y");
         $day = $this->getDayKhmer($d);
         $month = $this->getMonthKhmer($m);
+
         $today = "ថ្ងៃ " . $day . ' ខែ ' . $month . ' ឆ្នាំ ' . $y;
-        // dd($d);
+
+
+        //yesterday
+        $clonedate = clone $date;
+        $dateY = $this->getDatesByPeriodName('yesterday', $clonedate);
+        $morningY = $this->checkIn($dateY[0]);
+        $eveningY = $this->checkOut($dateY[0]);
+
+        $attendanceFirstY = DB::table('attendances')->select('id', 'userId', 'timeScan')
+            ->where('userId', $user->idCard)
+            ->whereBetween('timeScan', [$morningY[0], $morningY[1]])->orderBy('id', 'asc')->first();
+
+        $attendanceLastY = DB::table('attendances')->select('id', 'userId', 'timeScan')
+            ->where('userId', $user->idCard)
+            ->whereBetween('timeScan', [$eveningY[0], $eveningY[1]])->orderBy('id', 'desc')->first();
+
+        if ($attendanceFirstY == null) {
+            $firstScanNull = Carbon::parse($dateY[0])->format('Y-m-d 13:00:00');
+            $date1Y = Carbon::parse($firstScanNull);
+        } else {
+            $date1Y = Carbon::parse($attendanceFirstY->timeScan);
+        }
+        if ($attendanceLastY == null) {
+            $date2Y = Carbon::now();
+        } else {
+            $date2Y = Carbon::parse($attendanceLastY->timeScan);
+        }
+
+        $differenceY = $date1Y->diff($date2Y);
+
+        $dayY = $this->getDayKhmer(Carbon::parse($dateY[0])->format('D'));
+        $monthY = $this->getMonthKhmer(Carbon::parse($dateY[0])->format('M'));
+
+        $yesterday = "ថ្ងៃ " . $dayY . ' ខែ ' . $monthY . ' ឆ្នាំ ' . $y;
+
+        //last week
+
+        $lastWeekDate = clone $date;
+        $lastWeek = $this->getDatesByPeriodName('last_week', $lastWeekDate);
+        $attendances = DB::table('attendances')->join('users', 'users.idCard', '=', 'userId')->select('attendances.id', 'users.firstNameKh', 'users.lastNameKh', 'userId', 'timeScan')
+            ->where('userId', $user->idCard)
+            ->whereBetween('attendances.timeScan', [$lastWeek[0], $lastWeek[1]])->get();
+
+        $week = [];
+        foreach ($attendances as $key => $attendance) {
+
+            if($attendance->timeScan){
+                
+            }
+
+        }
+
+        // dd($attendances);
+
+
 
 
         return view('hrauoffsa.show', compact(
@@ -78,6 +131,11 @@ class AttendanceController extends Controller
             'attendanceFirst',
             'attendanceLast',
             'difference',
+            'yesterday',
+            'attendanceFirstY',
+            'attendanceLastY',
+            'differenceY',
+            'attendances'
 
         ));
     }

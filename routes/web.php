@@ -49,7 +49,7 @@ Route::get('/h', function () {
     return view('hrauoffsa.index', compact('difference'));
 });
 Route::get('/hr', [AttendanceController::class, 'getAllUsers']);
-Route::get('/attendances/{userId}', [AttendanceController::class, 'showUser']);
+
 
 Route::post('/login', [authController::class, 'login']);
 Route::get('/logout', [authController::class, 'logout']);
@@ -59,5 +59,7 @@ Route::middleware(['authm'])->group(function () {
     Route::resource('/roles', RoleController::class);
     Route::resource('/departments', DepartmentController::class);
     Route::resource('/offices', OfficeController::class);
+    
     Route::get('/attendances', [AttendanceController::class, 'attendances']);
+    Route::get('/attendances/{userId}', [AttendanceController::class, 'showAttendanceByUserId']);
 });

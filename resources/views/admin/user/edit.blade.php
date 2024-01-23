@@ -100,7 +100,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <div class="form-group">
-                            <label for="exampleFormControlInput1">នាមជីតា</label>
+                            <label for="exampleFormControlInput1">គោត្តនាម</label>
                             <input type="text" name="lastNameKh" value="{{ $user->lastNameKh }}" class="form-control"
                                 id="exampleFormControlInput1" placeholder="នាមជីតា">
                             @error('lastNameKh')

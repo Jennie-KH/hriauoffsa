@@ -20,9 +20,9 @@ class UserController extends Controller
 
     public function index()
     {
-        $agent = new Agent();
-        $device = $agent->device();
-
+        // $agent = new Agent();
+        // $device = $agent->device();
+        $this->getAttendances();
         $users = User::all();
         return view('admin.user.index', compact('users'));
     }
