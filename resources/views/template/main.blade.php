@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -36,18 +36,23 @@
     </style>
 </head>
 
-<body>
+<body> --}}
+
+@extends('template.master')
+
+@section('content')
     <div class="card">
         <div class="card-header card bg-primary text-white m-2 d-flex justify-content-center" style="height: 50px;">
             ប្រព័ន្ធគ្រប់គ្រងធនធានមនុស្សរបស់អង្គភាពសវនកម្មផ្ទៃក្នុង</div>
         <div class="card-body">
 
-            @yield('content')
+            @yield('content-main')
 
             {{-- <h1>{{ $difference->h }} : {{ $difference->i }}: {{ $difference->s }}</h1> --}}
 
         </div>
     </div>
-</body>
+@endsection
+{{-- </body>
 
-</html>
+</html> --}}

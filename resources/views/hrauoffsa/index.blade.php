@@ -1,6 +1,6 @@
-@extends('hrauoffsa.main')
+@extends('template.main')
 
-@section('content')
+@section('content-main')
     <h5 class="card-title">
         <form action="/hr">
             <div class="input-group mb-3">
@@ -28,7 +28,7 @@
                     <th scope="row">{{ $key + 1 }}</th>
                     <td>{{ $user->lastNameKh }} {{ $user->firstNameKh }}</td>
                     <td>{{ $user->idCard }}</td>
-                    <td><a href="/attendance/{{ $user->id }}">ពិនិត្យ</a></td>
+                    <td><a href="/attendances/{{ $user->id }}">ពិនិត្យ</a></td>
                 </tr>
             @endforeach
 

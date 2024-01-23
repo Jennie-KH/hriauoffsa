@@ -88,6 +88,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
             width: 50px;
             object-fit: cover;
         }
+
+        .box-img-attendance {
+            display: flex;
+            justify-content: start;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .box-img-attendance img {
+            height: 200px;
+            width: 200px;
+            object-fit: cover;
+        }
     </style>
 </head>
 
@@ -311,6 +325,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <a href="/users" class="nav-link">
                                         <i class="far fa-user nav-icon"></i>
                                         <p>មន្ត្រី</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/attendances" class="nav-link">
+                                        <i class="far fa-clock nav-icon"></i>
+                                        <p>វត្តមាន</p>
                                     </a>
                                 </li>
 

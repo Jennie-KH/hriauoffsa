@@ -1,13 +1,14 @@
-@extends('hrauoffsa.main')
+@extends('template.main')
 
-@section('content')
+
+@section('content-main')
     <div id="clock"></div>
     <div class="card-title​​ mb-2">ព័ត៌មានលម្អិតមន្ត្រី</div>
 
     <div class="row">
         <div class="col-lg-2"></div>
         <div class="col-lg-2 col-sm-12 d-flex justify-content-center align-items-center">
-            <div class="box-img">
+            <div class="box-img-attendance">
                 <img src="{{ asset('images/' . $user->image) }}" alt="">
             </div>
         </div>

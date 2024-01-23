@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -22,12 +22,17 @@ class AttendanceController extends Controller
         return view('hrauoffsa.index', compact('users'));
     }
 
+    public function attendances(Request $request)
+    {
+        $this->getAttendances();
+
+        $attendances = Attendance::all();
+
+        return view('admin.attendance.attendance', compact('attendances'));
+    }
+
     public function showUser(Request $request, string $userId)
     {
-        // $date = Carbon::now();
-        // $d = Carbon::parse($date)->format('Y-m-d 06:30:00');
-        // // $gdate = $this->getDatesByPeriodName('sat_sun_last_week', $date);
-        // dd($d);
 
         $user = User::all()->where('id', $userId)->first();
 
