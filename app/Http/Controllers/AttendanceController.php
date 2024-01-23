@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
+
 class AttendanceController extends Controller
 {
 
@@ -24,11 +25,42 @@ class AttendanceController extends Controller
 
     public function attendances(Request $request)
     {
-        $this->getAttendances();
+        // $this->getAttendances();
 
-        $attendances = Attendance::all();
+        // $attendances = Attendance::all();
+      
+        $currentDay=date('Y-m-d');
+        
+        $attendances =Attendance::join('users','users.id','=','attendances.userId')
 
-        return view('admin.attendance.attendance', compact('attendances'));
+        ->join('roles','roles.id','=','users.roleId')
+        
+        ->where(DB::raw("DATE_FORMAT(attendances.timeScan, '%Y-%m-%d')"),'=',$currentDay)
+
+        ->groupBy(DB::raw("DATE_FORMAT(attendances.timeScan, '%Y-%m-%d')"),'users.id')
+        
+        ->get(
+            ['users.id',
+            
+            'users.image AS img',
+
+            'users.email AS email',
+
+            'roles.roleNameKh as role',
+
+            'users.idCard AS card_id',
+
+            'users.active AS active',
+        
+            DB::raw("DATE_FORMAT(attendances.timeScan, '%Y-%m-%d') as time_scan"),
+
+            DB::raw('CONCAT(users.lastNameKh," ",users.firstNameKh) AS user_name')
+        ]);
+        // echo "<pre>";
+        // var_dump($attendances);
+        // die();
+
+        return view('admin.attendance.attendance',compact('attendances'));
     }
 
     public function showAttendanceByUserId(Request $request, string $userId)
