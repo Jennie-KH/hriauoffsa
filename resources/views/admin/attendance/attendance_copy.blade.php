@@ -3416,9 +3416,7 @@ tr td{
                                             clearInterval(clockInterval); // Stop the clock
                                             var totalTime = calculateElapsedTime(startTime, breakTime); // Calculate total elapsed time until break
                                             $("#demo_{{$row->id}}").text("Total time until break: " + totalTime); // Update demo text
-                                            // if(workEvening>breakTime){
 
-                                            // }
                                         } else {
                                             $("#demo_{{$row->id}}").text(textString); // Update demo text with current time
                                         }

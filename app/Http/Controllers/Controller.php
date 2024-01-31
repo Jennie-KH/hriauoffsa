@@ -23,11 +23,16 @@ class Controller extends BaseController
         $attendances = $zk->getAttendance();
 
         $attendanceModel = Attendance::all()->last();
+        // dd($attendances);
 
         $attendanceToday = [];
+
+    
+        // borey
         foreach ($attendances as $attendance) {
 
-            if ($attendance['timestamp'] > $attendanceModel->timeScan) {
+            if ($attendance['timestamp']>$attendanceModel->timeScan) {
+               
                 $attendanceToday[] = [
                     'userId' => $attendance['id'],
                     'timeScan' => $attendance['timestamp']
@@ -35,8 +40,11 @@ class Controller extends BaseController
                 ];
             }
         }
+       
+            Attendance::insert($attendanceToday);
+    
+        
 
-        Attendance::insert($attendanceToday);
     }
 
     public function getDayKhmer($day)
@@ -171,6 +179,14 @@ class Controller extends BaseController
             $dates = [$startDate, $endDate];
         }
         return $dates;
+    }
+
+    public function time_in_late($date){
+        $timeLate=['',''];
+        $startDate=Carbon::parse($date)->format('Y-m-d 09:00:00');
+        $endDate=Carbon::parse($date)->format('Y-m-d 12:00:00');
+        $timeLate=[$startDate,$endDate];
+        return $timeLate;
     }
 
     public function checkIn($date)

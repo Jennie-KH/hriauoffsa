@@ -2,9 +2,6 @@
 @section('title', 'User')
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <h5 class="m-0"><a class="btn btn-dark btn-sm" href="/users">ថយក្រោយ</a></h5>
-        </div>
         <div class="card-body">
             <form action="/users" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -282,6 +279,9 @@
 
                 <br>
                 <input type="submit" class="btn btn-primary btn-sm" value="រក្សាទុក">
+                <!-- <input type="submit" class="btn btn-danger btn-sm" value="ថយក្រោយ"> -->
+                <a class="btn btn-danger btn-sm" href="/users">ថយក្រោយ</a>
+               
             </form>
         </div>
     </div>
